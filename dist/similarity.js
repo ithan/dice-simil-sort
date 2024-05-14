@@ -4,31 +4,28 @@
  * @description Provides functions to sort strings by similarity using Dice coefficient and optional prefix matching.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sortArrayBySimilarity = exports.diceCoefficient = exports.normalizeString = void 0;
+exports.sortArrayBySimilarity = exports.diceCoefficient = exports.normalizeString = exports.normalizationCache = void 0;
 const normalizationCache = new Map();
+exports.normalizationCache = normalizationCache;
 /**
  * Normalizes a string by removing diacritics and punctuation, and converting to lowercase.
  * @param {string} str - The string to normalize.
  * @returns {string} The normalized string.
  */
-function normalizeString(str: string): string {
+function normalizeString(str) {
     const cached = normalizationCache.get(str);
     if (cached) {
-      return cached;
+        return cached;
     }
-  
     const normalized = str
-      .replace(/ß/g, 'ss') // Replace "ß" with "ss" first
-      .normalize('NFD') // Normalize to decomposed form
-      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-      .replace(/[^\w\s]/gi, '') // Remove punctuation
-      .toLowerCase(); // Convert to lowercase for case-insensitive comparison
-  
+        .replace(/ß/g, 'ss') // Replace "ß" with "ss" first
+        .normalize('NFD') // Normalize to decomposed form
+        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+        .replace(/[^\w\s]/gi, '') // Remove punctuation
+        .toLowerCase(); // Convert to lowercase for case-insensitive comparison
     normalizationCache.set(str, normalized);
     return normalized;
-  }
-  
-  
+}
 exports.normalizeString = normalizeString;
 /**
  * Generates bigrams from a string.
